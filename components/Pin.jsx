@@ -1,29 +1,52 @@
-import React, {useState} from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {v4 as uuidv4} from "uuid";
 import { AiTwotoneDelete } from "react-icons/ai";
 import { BsFillArrowUpRightCircleFill } from "react-icons/bs";
-import { BsFillBasket, BsBasket } from 'react-icons/bs';
+import { BsBasketFill, BsBasket } from 'react-icons/bs';
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import { doc, deleteDoc, collection } from "firebase/firestore";
-import {db, storage} from "../firebase";
+import { doc, deleteDoc, collection, setDoc, onSnapshot, query } from "firebase/firestore";
+import {db } from "../firebase";
 
 export default function Pin({pin}) {
     const { data: session } = useSession();
     const [postHovered, setPostHovered] = useState(false);
-    //saved should be like a "like"
-    //const alreadySaved = !!(save?.filter((item) => item.postedBy.id === session.user.id))?.length; //if it's there, we get 1, otherwise 0--boolean
-    //!! notation turns it into a boolean! i.e. true or false
-    //length = 0 -> !0 -> true -> !true -> false
+    const [saves,setSaves] = useState([]);
+    const [hasSaved,setHasSaved] = useState(false);
+
     const handleClick = e => {
-        e.preventDefault()
-        router.push("/pindetail/[id]")
+        e.preventDefault();
+        router.push("/pindetail/[id]");
     }
 
-    const savePin = (key) => {
-        if (!alreadySaved) {
+    useEffect(
+        () => 
+            onSnapshot(
+                query(
+                    collection(db,'posts',pin.id,'save'),
+                ),
+                (snapshot) => setSaves(snapshot.docs)
+            ),
+        [db,pin.id],
+    );
+
+    useEffect(
+        () => 
+            setHasSaved(
+                saves.findIndex((save) => (save.id === session?.user?.uid)) !== -1
+            ),
+        [saves]
+    );
+
+    const savePin = async () => {
+        if (hasSaved) {
+            await deleteDoc(doc(db,"posts",pin.id,'save',session.user.uid));
+        } else {
             //update firebase
+            await setDoc(doc(db,'posts',pin.id,'save',session.user.uid),{
+                name: session.user.name,
+            })
         }
     }
 
@@ -46,21 +69,24 @@ export default function Pin({pin}) {
                         <div className="flex items-center justify-between">
                             <div className="flex gap-2">
                                 <p className="bg-red-500 opacity-70 hover:opacity-100 text-white font-bold px-5 py-1 text-base rounded-3xl hover:shadow-md outlined-none">
-                                    {pin.data().portion - pin.data().save?.length} left!
+                                    {pin.data().portion - saves.length} left!
                                 </p>
                             </div>
-                            {/* {alreadySaved? (
+                            {hasSaved? (
                                 <button onClick={(e) => {
                                     e.stopPropagation();
-                                    savePin(key);
+                                    savePin();
                                 }} type="button" className="bg-white w-9 h-9 rounded-full flex items-center justify-center text-dark text-xl opacity-75 hover:opacity-100 hover:shadow-md outline-none">
-                                    <BsFillBasket />
+                                    <BsBasketFill />
                                 </button>
                             ) : (
-                                <button type="button" className="bg-white w-9 h-9 rounded-full flex items-center justify-center text-dark text-xl opacity-75 hover:opacity-100 hover:shadow-md outline-none">
+                                <button onClick={(e) => {
+                                    e.stopPropagation();
+                                    savePin();
+                                }} type="button" className="bg-white w-9 h-9 rounded-full flex items-center justify-center text-dark text-xl opacity-75 hover:opacity-100 hover:shadow-md outline-none">
                                     <BsBasket />
                                 </button>
-                            )} */}
+                            )}
                         </div>
                         <div className="flex justify-between items-center gap-2 w-full">
                             {pin.data().postedBy === session?.user.uid && (
