@@ -75,6 +75,8 @@ export default function Pin({pin}) {
                                     {pin.data().portion - saves.length} left!
                                 </p>
                             </div>
+                            {(pin.data().portion - saves.length > 0)? 
+                            <div>
                             {hasSaved? (
                                 <button onClick={(e) => {
                                     e.stopPropagation();
@@ -90,6 +92,7 @@ export default function Pin({pin}) {
                                     <BsBasket />
                                 </button>
                             )}
+                            </div> : <div></div>}
                         </div>
                         <div className="flex justify-between items-center gap-2 w-full">
                             {pin.data().postedBy === session?.user.uid && (
