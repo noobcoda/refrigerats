@@ -6,7 +6,6 @@ import { IoIosArrowForward } from "react-icons/io";
 const navLinks = [
     { title: "Home", path: "/home"},
     { title: "Profile", path: "/user-profile"},
-    { title: "Basket", path: "/user-profile/basket"},
 ]
 
 const isNotActiveStyle = "flex items-center px-5 gap-3 text-gray-500 hover:text-black transition-all duration-200 ease-in-out capitalize";

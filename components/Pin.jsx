@@ -47,6 +47,9 @@ export default function Pin({pin}) {
             await setDoc(doc(db,'posts',pin.id,'save',session.user.uid),{
                 name: session.user.name,
             })
+
+            //also send notification to seller
+            
         }
     }
 
@@ -56,7 +59,7 @@ export default function Pin({pin}) {
     }
     
     return (
-        <div className="m-2">
+        <div className="m-2 border-2 border-gray-200">
             <div
                 onMouseEnter={() => setPostHovered(true)}
                 onMouseLeave={() => setPostHovered(false)}
@@ -105,17 +108,25 @@ export default function Pin({pin}) {
                 )}
             </div>
             <Link href={`userprofile/[${pin.data().postedBy}]`} className="flex-gap-2 mt-2 items-center">
-                <div>                
-                    <img 
-                        className="w-8 h-8 rounded-full object-cover"
-                        src={pin?.data().profileImg}
-                        alt="userProfile"
-                    />
-                    <p className="font-semibold capitalize">
-                       {pin?.data().username}
-                    </p>
+                <div className="flex flex-col items-center">
+                    <div className="flex gap-3 mt-3 items-center justify-between">
+                        <img 
+                            className="w-8 h-8 rounded-full object-cover"
+                            src={pin?.data().profileImg}
+                            alt="userProfile"
+                        />
+                        <p className="font-semibold capitalize">
+                        {pin?.data().username}
+                        </p>
+                    </div>                
                     <p>
                         {pin?.data().deliveryLoc}
+                    </p>
+                    <p>
+                        {pin?.data().deliveryTime}
+                    </p>
+                    <p>
+                        {pin?.data().price}
                     </p>
                 </div>
             </Link>
