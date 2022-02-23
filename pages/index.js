@@ -5,9 +5,11 @@ import team from "../assets/team.svg";
 import { signIn, useSession } from "next-auth/react";
 import React, { useEffect } from "react";
 
+
 export default function Main() {
   const {data:session} = useSession();
   console.log(session);
+
 
   return (
     <div className="flex justify-start items-center flex-col h-screen">

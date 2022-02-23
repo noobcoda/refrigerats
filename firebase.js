@@ -1,15 +1,11 @@
 // Import the functions you need from the SDKs you need
+//https://blog.logrocket.com/push-notifications-with-react-and-firebase/
+
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
-import { getMessaging } from "firebase/messaging";
-// Import the functions you need from the SDKs you need
+import { getMessaging, getToken } from "firebase/messaging";
 
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyDi4v-dFpukq-7AML_8MwgMc4r4Y_P3RJQ",
   authDomain: "refrigeratsfirebase.firebaseapp.com",
@@ -22,9 +18,26 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-const db = getFirestore();
-const storage = getStorage();
-const messaging = getMessaging();
+const db = getFirestore(app);
+const storage = getStorage(app);
+const messaging = getMessaging(app);
 
-export { app, db, storage, messaging };
+export const getAToken = async (setTokenFound) => {
+  getToken(messaging, { vapidKey: process.env.VAPID_KEY }).then((currentToken) => {
+    if (currentToken) {
+      // Send the token to your server and update the UI if necessary
+      // ...
+      console.log('current token for client: ', currentToken);
+      setTokenFound(true);
+    } else {
+      // Show permission request UI
+      console.log('No registration token available. Request permission to generate one.');
+      setTokenFound(false);
+    }
+  }).catch((err) => {
+    console.log('An error occurred while retrieving token. ', err);
+    // ...
+  });
+};
 
+export { app, db, storage };
