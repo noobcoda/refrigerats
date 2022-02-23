@@ -16,21 +16,21 @@ function MyApp({ Component, pageProps: {session, ...pageProps} }) {
   const [notification, setNotification] = useState({title:"",body:""});
   const [isTokenFound, setTokenFound] = useState(false);
 
-  useEffect(() => {
-    getAToken(setTokenFound);
-    console.log(show,notification);
-    const messaging = getMessaging();
-    onMessage(messaging, (payload) => {
-      console.log('Message received. ', payload);
-      setShow(true);
-      setNotification({title: payload.notification.title, body: payload.notification.body})
-    });
-    // onMessageListener().then(payload => {
-    //   setShow(true);
-    //   setNotification({title: payload.notification.title, body: payload.notification.body})
-    //   console.log(payload);
-    // }).catch(err => console.log("failed ",err));
-  })
+  // useEffect(() => {
+  //   getAToken(setTokenFound);
+  //   console.log(show,notification);
+  //   const messaging = getMessaging();
+  //   onMessage(messaging, (payload) => {
+  //     console.log('Message received. ', payload);
+  //     setShow(true);
+  //     setNotification({title: payload.notification.title, body: payload.notification.body})
+  //   });
+  //   onMessageListener().then(payload => {
+  //     setShow(true);
+  //     setNotification({title: payload.notification.title, body: payload.notification.body})
+  //     console.log(payload);
+  //   }).catch(err => console.log("failed ",err));
+  // })
 
   return (
     <div>

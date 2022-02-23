@@ -14,10 +14,14 @@ export default function Pin({pin}) {
     const [postHovered, setPostHovered] = useState(false);
     const [saves,setSaves] = useState([]);
     const [hasSaved,setHasSaved] = useState(false);
+    const router = useRouter();
 
     const handleClick = e => {
         e.preventDefault();
-        router.push("/pindetail/[id]");
+        router.push({
+            pathname: "/post/[pid]",
+            query: {pid:pin.id},
+        });
     }
 
     useEffect(

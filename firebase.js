@@ -20,7 +20,7 @@ const firebaseConfig = {
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const db = getFirestore(app);
 const storage = getStorage(app);
-const messaging = getMessaging(app);
+//const messaging = getMessaging(app);
 
 export const getAToken = async (setTokenFound) => {
   getToken(messaging, { vapidKey: process.env.VAPID_KEY }).then((currentToken) => {
