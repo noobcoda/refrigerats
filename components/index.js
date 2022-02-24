@@ -4,6 +4,5 @@ export { default as Pins } from "./Pins";
 export { default as MyNav } from "./MyNav";
 export { default as CreatePin } from "./CreatePin";
 export { default as Feed } from "./Feed";
-export { default as PinDetail } from "./PinDetail";
 export { default as Navbar } from "./Navbar";
 export { default as Spinner } from "./Spinner";

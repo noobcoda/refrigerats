@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Navbar, Feed, PinDetail, CreatePin, Search } from "../components";
+import { Navbar, Feed, CreatePin, Search } from "../components";
 
 export default function Pins({user}) {
     const [searchTerm, setSearchTerm] = useState("")
