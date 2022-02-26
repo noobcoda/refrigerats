@@ -44,7 +44,7 @@ export default function Navbar({searchTerm, setSearchTerm, user}) {
           </div>
           <div className="flex gap-3 items-center">
             <IoMdAdd onClick={() => setOpen(true)} className="flex items-center justify-end bg-black text-white rounded-lg w-6 h-6"/>
-            <IoIosNotificationsOutline onClick={subscribeUser} className="flex items-center justify-end"/>
+            <IoIosNotificationsOutline onClick={subscribeUser} className="flex items-center justify-end w-6 h-6"/>
           </div>
       </div>
   )
