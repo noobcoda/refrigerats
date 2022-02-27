@@ -2,8 +2,8 @@ import React from 'react';
 import { useRouter } from "next/router";
 import { Navbar } from "../../components";
 import { FaStar } from "react-icons/fa";
-import { useEffect, useState } from "react";
-import { doc, deleteDoc, collection, setDoc, onSnapshot, query } from "firebase/firestore";
+import { useEffect, useState, useRef } from "react";
+import { doc, deleteDoc, collection, setDoc, onSnapshot, query, getDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { useSession } from "next-auth/react";
 
@@ -17,9 +17,19 @@ const Post = () => {
     const [hasReviewed,setHasReviewed] = useState(false);
     const [foodRating,setFoodRating] = useState(null);
     const [serviceRating, setServiceRating] = useState(null);
-    const [userComment, setUserComment] = useState(null);
-    const [comments,setComments] = useState([]);
+    const commentRef = useRef(null);
     const [review,setReview] = useState([]);
+    const [overallRating,setOverallRating] = useState(null);
+
+    useEffect(() => {
+        async function fetchPin() {
+            const pinRef = collection(db,"posts");
+            const docSnap = await getDoc(doc(pinRef,pid));
+            setPin(docSnap);
+        }
+        fetchPin()
+    },[]
+    );
 
     useEffect(
         () => 
@@ -29,7 +39,7 @@ const Post = () => {
                 ),
                 (snapshot) => setReview(snapshot.docs)
             ),
-        [db,pid],
+        [review],
     );
 
     useEffect(
@@ -41,26 +51,25 @@ const Post = () => {
     );
 
     useEffect(
-        () => 
-            onSnapshot(
-                query(
-                    collection(db,'posts',pid,'review',session.user?.uid,'qualityOfFood'),
-                ),
-                (snapshot) => setFoodRating(snapshot.docs)
-            ),
-        [db,pid],
-    );
-
-    useEffect(
-        () => 
-            onSnapshot(
-                query(
-                    collection(db,'posts',pid,'review',session.user?.uid,'serviceRating'),
-                ),
-                (snapshot) => setServiceRating(snapshot.docs)
-            ),
-        [db,pid],
-    );
+        () => {
+            async function calcOverallRating() {
+                const overallTotal = 0;
+                for (let i=0;i<review.length;i++){
+                    let averageOfOne = 0;
+                    let userTotal = overallTotal + review[i].data().qualityOfFood + review[i].data().serviceRating;
+                    averageOfOne = userTotal/2;
+                    overallTotal += averageOfOne;
+                }
+                const rating = overallTotal/review.length;
+                setOverallRating(rating);
+            }
+            if (review.length > 0) {
+                calcOverallRating();
+            } else {
+                setOverallRating("N/A");
+            }
+        },[review]
+    )
 
     const submitReview = async () => {
 
@@ -69,7 +78,7 @@ const Post = () => {
             name: session.user?.name,
             qualityOfFood: foodRating,
             serviceRating: serviceRating,
-            comment: userComment,
+            comment: commentRef.current.value,
         })
 
     }
@@ -81,11 +90,12 @@ const Post = () => {
                 <div className="flex flex-col m-4 p-1">
                     {/* rating */}
                     <div className="flex"> 
-                        <h1 className="text-7xl font-extrabold mr-2">4.8 </h1>
+                        <h1 className="text-7xl font-extrabold mr-2">{overallRating}</h1>
                         <h3 className="text-xl font-bold relative top-3 text-gray-400">/ 5</h3>
                     </div>
-                    <h1 className="mt-3 text-4xl font-extrabold">Burger</h1>
-                    <h3 className="mt-2">Descripttttttttttttttion</h3>
+                    <h1 className="mt-3 text-4xl font-extrabold">{pin?.data().caption}</h1>
+                    <h3 className="mt-2">Location: {pin?.data().deliveryLoc}</h3>
+                    <h3 className="mt-2">Time: {pin?.data().deliveryTime}</h3>
                     <div>
                         {/* the actual post*/}
                     </div>
@@ -125,6 +135,11 @@ const Post = () => {
                         </div>
                     </div>
                     <h3 className="text-xl font-extrabold mb-2"> Comment </h3>
+                    <input 
+                        type="text"
+                        ref={commentRef}
+                        className="block mb-4 p-4 w-full text-gray-900 bg-gray-50 rounded-lg border border-gray-300 sm:text-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    />
                     <button 
                     className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
                     onClick={()=>submitReview()}
