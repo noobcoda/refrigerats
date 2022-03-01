@@ -6,6 +6,7 @@ import { useEffect, useState, useRef } from "react";
 import { doc, deleteDoc, collection, setDoc, onSnapshot, query, getDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { useSession } from "next-auth/react";
+import { ReviewBox } from '../../components';
 
 const Post = () => {
     const { data: session } = useSession();
@@ -14,7 +15,6 @@ const Post = () => {
     const {pid} = router.query;
     console.log(pid);
     const [pin,setPin] = useState(null);
-    const [hasReviewed,setHasReviewed] = useState(false);
     const [foodRating,setFoodRating] = useState(null);
     const [serviceRating, setServiceRating] = useState(null);
     const commentRef = useRef(null);
@@ -40,14 +40,6 @@ const Post = () => {
                 (snapshot) => setReview(snapshot.docs)
             ),
         [review],
-    );
-
-    useEffect(
-        () => 
-            setHasReviewed(
-                review.findIndex((review) => (review.id === session?.user?.uid)) !== -1
-            ),
-        [review]
     );
 
     useEffect(
@@ -86,7 +78,7 @@ const Post = () => {
     return (
         <div className="px-2 md:px-5">
             <Navbar />
-            <div className="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 align-content:center sm:mr-100 sm:ml-100 mb-5">
                 <div className="flex flex-col m-4 p-1">
                     {/* rating */}
                     <div className="flex"> 
@@ -151,6 +143,7 @@ const Post = () => {
                         {/* <HiStar className="fill-lime-400"/> */}
                         <h1 className="font-semibold ">2 reviews</h1>
                     </div>
+                    <ReviewBox reviews={review}/>
                 </div>
             </div>
 

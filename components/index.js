@@ -6,3 +6,4 @@ export { default as CreatePin } from "./CreatePin";
 export { default as Feed } from "./Feed";
 export { default as Navbar } from "./Navbar";
 export { default as Spinner } from "./Spinner";
+export { default as ReviewBox } from "./ReviewBox";
