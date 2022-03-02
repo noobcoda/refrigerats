@@ -20,6 +20,7 @@ const Post = () => {
     const commentRef = useRef(null);
     const [review,setReview] = useState([]);
     const [overallRating,setOverallRating] = useState(null);
+    const [saves,setSaves] = useState([]);
 
     useEffect(() => {
         async function fetchPin() {
@@ -29,6 +30,17 @@ const Post = () => {
         }
         fetchPin()
     },[]
+    );
+
+    useEffect(
+        () => 
+            onSnapshot(
+                query(
+                    collection(db,'posts',pid,'save'),
+                ),
+                (snapshot) => setSaves(snapshot.docs)
+            ),
+        [saves],
     );
 
     useEffect(
@@ -76,7 +88,7 @@ const Post = () => {
     }
 
     return (
-        <div className="px-2 md:px-5">
+        <div className="px-2 md:px-5 bg-slate-100">
             <Navbar />
             <div className="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 align-content:center sm:mr-100 sm:ml-100 mb-5">
                 <div className="flex flex-col m-4 p-1">
@@ -88,9 +100,22 @@ const Post = () => {
                     <h1 className="mt-3 text-4xl font-extrabold">{pin?.data().caption}</h1>
                     <h3 className="mt-2">Location: {pin?.data().deliveryLoc}</h3>
                     <h3 className="mt-2">Time: {pin?.data().deliveryTime}</h3>
+
+                    {session.user?.uid == pin?.data().postedBy ? (
                     <div>
-                        {/* the actual post*/}
+                        <h1 className="font-semibold mt-2">Ordered by...</h1>
+                        <div className="flex space-x-4 overflow-x-auto bg-white p-4 rounded-md mt-2">
+                        {/* the likes, shown only if owned by user*/}
+                        {saves?.map((s)=>(
+                            <div className="flex flex-col gap-2 items-center justify-center text-center">
+                                <span className="font-semibold">{s.data().name}</span>
+                                <input class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckDefault"/>
+                            </div>
+                        ))}
                     </div>
+                    </div>
+                    
+                    ):<div></div>}
                 </div>
                 <div className="m-4 p-1">
                     {/* your review */}
@@ -140,8 +165,7 @@ const Post = () => {
                 <div className="m-4 p-1">
                     {/* for the review, letting user review */}
                     <div className="text-center text-large flex gap-2 md:gap-2 w-full">
-                        {/* <HiStar className="fill-lime-400"/> */}
-                        <h1 className="font-semibold ">2 reviews</h1>
+                        <h1 className="font-semibold ">Reviews</h1>
                     </div>
                     <ReviewBox reviews={review}/>
                 </div>
