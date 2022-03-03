@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Spinner from "./Spinner";
-import { useRouter } from "next/router";
 import MyMasonry from './MyMasonry';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from '../firebase';
 
 export default function Feed(){
-  const router = useRouter();
-  const {categoryId} = router.query 
   const [loading,setLoading] = useState(false);
   const [pins,setPins] = useState(null);
 

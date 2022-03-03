@@ -7,3 +7,5 @@ export { default as Feed } from "./Feed";
 export { default as Navbar } from "./Navbar";
 export { default as Spinner } from "./Spinner";
 export { default as ReviewBox } from "./ReviewBox";
+export { default as MyMasonry } from "./MyMasonry";
+export { default as Search } from "./Search";

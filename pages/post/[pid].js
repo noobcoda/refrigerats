@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouter } from "next/router";
-import { Navbar } from "../../components";
+import { Sidebar } from "../../components";
 import { FaStar } from "react-icons/fa";
 import { useEffect, useState, useRef } from "react";
 import { doc, deleteDoc, collection, setDoc, onSnapshot, query, getDoc } from "firebase/firestore";
@@ -78,8 +78,8 @@ const Post = () => {
     const submitReview = async () => {
 
         //update firebase
-        await setDoc(doc(db,'posts',pid,'review',session.user?.uid),{
-            name: session.user?.name,
+        await setDoc(doc(db,'posts',pid,'review',session?.user?.uid),{
+            name: session?.user?.name,
             qualityOfFood: foodRating,
             serviceRating: serviceRating,
             comment: commentRef.current.value,
@@ -89,7 +89,6 @@ const Post = () => {
 
     return (
         <div className="px-2 md:px-5 bg-slate-100">
-            <Navbar />
             <div className="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 align-content:center sm:mr-100 sm:ml-100 mb-5">
                 <div className="flex flex-col m-4 p-1">
                     {/* rating */}
@@ -101,7 +100,7 @@ const Post = () => {
                     <h3 className="mt-2">Location: {pin?.data().deliveryLoc}</h3>
                     <h3 className="mt-2">Time: {pin?.data().deliveryTime}</h3>
 
-                    {session.user?.uid == pin?.data().postedBy ? (
+                    {session?.user?.uid == pin?.data().postedBy ? (
                     <div>
                         <h1 className="font-semibold mt-2">Ordered by...</h1>
                         <div className="flex space-x-4 overflow-x-auto bg-white p-4 rounded-md mt-2">
