@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouter } from "next/router";
-import { Sidebar } from "../../components";
+import { Map } from "../../components";
 import { FaStar } from "react-icons/fa";
 import { useEffect, useState, useRef } from "react";
 import { doc, deleteDoc, collection, setDoc, onSnapshot, query, getDoc } from "firebase/firestore";
@@ -161,6 +161,9 @@ const Post = () => {
                     onClick={()=>submitReview()}
                     >Submit</button>
                 </div>
+                <section className="inline-flex">
+                    <Map />
+                </section>
                 <div className="m-4 p-1">
                     {/* for the review, letting user review */}
                     <div className="text-center text-large flex gap-2 md:gap-2 w-full">
